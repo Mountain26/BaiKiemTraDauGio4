@@ -1,41 +1,39 @@
 plugins {
     id 'java'
-    id 'war'
+    id 'org.springframework.boot' version '3.3.12'
+    id 'io.spring.dependency-management' version '1.1.7'
 }
 
-group 'ra.edu'
-version '1.0-SNAPSHOT'
+version = '0.0.1-SNAPSHOT'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
 
 repositories {
     mavenCentral()
 }
 
-ext {
-    junitVersion = '5.13.2'
-}
-
-sourceCompatibility = '21'
-targetCompatibility = '21'
-
-tasks.withType(JavaCompile) {
-    options.encoding = 'UTF-8'
-}
-
 dependencies {
-    implementation('org.springframework:spring-webmvc:6.1.5')
-    compileOnly('jakarta.servlet:jakarta.servlet-api:6.0.0')
-    implementation 'jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api:3.0.0'
-    implementation 'org.glassfish.web:jakarta.servlet.jsp.jstl:3.0.1'
-    compileOnly('jakarta.servlet.jsp:jakarta.servlet.jsp-api:3.1.1')
-    implementation("org.thymeleaf:thymeleaf-spring6:3.1.2.RELEASE")
-    compileOnly('jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api:3.0.2')
-    runtimeOnly('org.glassfish.web:jakarta.servlet.jsp.jstl:3.0.1')
-    implementation("jakarta.validation:jakarta.validation-api:4.0.0-M1")
-    implementation("org.hibernate.validator:hibernate-validator:9.1.0.Final")
-    testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
+    implementation 'org.springframework:spring-orm'
+    implementation 'org.hibernate.orm:hibernate-core'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    compileOnly 'org.projectlombok:lombok'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    runtimeOnly 'com.mysql:mysql-connector-j'
+    annotationProcessor 'org.projectlombok:lombok'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testCompileOnly 'org.projectlombok:lombok'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    testAnnotationProcessor 'org.projectlombok:lombok'
 }
 
-test {
+tasks.named('test') {
     useJUnitPlatform()
 }

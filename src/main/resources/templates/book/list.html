@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Danh sach sach</title>
+    <style>
+        body { margin: 0; display: flex; flex-direction: column; min-height: 730px; }
+        header, footer { background: #eee; text-align: center; }
+        main { flex: 1; padding: 20px; }
+        .toolbar { display: flex; justify-content: space-between; margin-bottom: 15px; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+        a.btn { text-decoration: none; padding: 5px 10px; background: #ddd; color: #000; border-radius: 3px; }
+        .sort-link { color: inherit; text-decoration: none; }
+    </style>
+</head>
+<header>
+    <h2>Quan ly Thu vien - Sach</h2>
+</header>
+<body>
+<main>
+    <div class="toolbar">
+        <form th:action="@{/book}" method="get">
+            <input type="text" name="keyword" th:value="${keyword}" placeholder="Tim theo tieu de hoac tac gia..." style="padding:5px; width:300px;">
+            <button type="submit" style="padding:5px;">Tim</button>
+        </form>
+        <a th:href="@{/book/add}" class="btn" style="background:#008CBA; color:white;">+ Them sach</a>
+    </div>
+
+    <div th:if="${books == null or #lists.isEmpty(books)}" style="color:red; font-style:italic;">
+        Chua co sach nao trong thu vien.
+    </div>
+
+    <table th:if="${books != null and not #lists.isEmpty(books)}">
+        <thead>
+        <tr>
+            <th>STT</th>
+            <th><a th:href="@{/book(page=${currentPage},keyword=${keyword},sortBy='title',dir=${sortBy=='title' && dir=='asc' ? 'desc' : 'asc'})}" class="sort-link">Tieu de</a></th>
+            <th>Tac gia</th>
+            <th>ISBN</th>
+            <th><a th:href="@{/book(page=${currentPage},keyword=${keyword},sortBy='publicationYear',dir=${sortBy=='publicationYear' && dir=='asc' ? 'desc' : 'asc'})}" class="sort-link">Nam XB</a></th>
+            <th><a th:href="@{/book(page=${currentPage},keyword=${keyword},sortBy='price',dir=${sortBy=='price' && dir=='asc' ? 'desc' : 'asc'})}" class="sort-link">Gia</a></th>
+            <th>Thao tac</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="book,iterStat : ${books}">
+            <td th:text="${(currentPage-1)*5 + iterStat.index + 1}"></td>
+            <td th:text="${book.title}"></td>
+            <td th:text="${book.author}"></td>
+            <td th:text="${book.isbn}"></td>
+            <td th:text="${book.publicationYear}"></td>
+            <td th:text="${#numbers.formatDecimal(book.price, 0, 'COMMA', 2, 'POINT')} + ' VND'"></td>
+            <td>
+                <a th:href="@{/book/edit/{id}(id=${book.id},page=${currentPage},keyword=${keyword},sortBy=${sortBy},dir=${dir})}" class="btn">Sua</a>
+                <a th:href="@{/book/delete/{id}(id=${book.id},page=${currentPage},keyword=${keyword},sortBy=${sortBy},dir=${dir})}" class="btn" style="background:#f44336; color:white;" onclick="return confirm('Xoa sach nay?');">Xoa</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div style="margin-top:15px;">
+        <button th:if="${currentPage > 1}" th:onclick="|location.href='@{/book(page=${currentPage-1},keyword=${keyword},sortBy=${sortBy},dir=${dir})}'|">Previous</button>
+        <span> Trang <span th:text="${currentPage}"></span> / <span th:text="${totalPages}"></span> </span>
+        <button th:if="${currentPage < totalPages}" th:onclick="|location.href='@{/book(page=${currentPage+1},keyword=${keyword},sortBy=${sortBy},dir=${dir})}'|">Next</button>
+    </div>
+
+</main>
+</body>
+<footer>
+    <p>&copy; 2026 Thu vien</p>
+</footer>
+</html>
