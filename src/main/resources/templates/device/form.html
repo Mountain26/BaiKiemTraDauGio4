@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Device Form</title>
+    <style>
+        body { font-family: sans-serif; margin: 40px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; }
+        input[type="text"], input[type="date"], input[type="file"], select { width: 300px; padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
+        .error { color: red; font-size: 0.9em; }
+        .btn { padding: 8px 12px; background-color: #007bff; color: white; border-radius: 4px; text-decoration: none; border: none; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h1>Device Form</h1>
+    <form th:with="actionUrl=${device.id == null} ? '/devices/add' : '/devices/edit/' + device.id"
+          th:action="@{${actionUrl}}"
+          th:object="${device}"
+          method="post" enctype="multipart/form-data">
+        <input type="hidden" th:field="*{id}">
+        <div class="form-group">
+            <label for="deviceName">Device Name:</label>
+            <input type="text" id="deviceName" th:field="*{deviceName}">
+            <p class="error" th:if="${#fields.hasErrors('deviceName')}" th:errors="*{deviceName}"></p>
+        </div>
+        <div class="form-group">
+            <label for="modelCode">Model Code:</label>
+            <input type="text" id="modelCode" th:field="*{modelCode}">
+            <p class="error" th:if="${#fields.hasErrors('modelCode')}" th:errors="*{modelCode}"></p>
+        </div>
+        <div class="form-group">
+            <label for="price">Price:</label>
+            <input type="text" id="price" th:field="*{price}">
+        </div>
+        <div class="form-group">
+            <label for="manufactureDate">Manufacture Date:</label>
+            <input type="date" id="manufactureDate" th:field="*{manufactureDate}">
+            <p class="error" th:if="${#fields.hasErrors('manufactureDate')}" th:errors="*{manufactureDate}"></p>
+        </div>
+        <div class="form-group">
+            <label for="productImage">Product Image:</label>
+            <input type="file" id="productImage" name="productImage">
+        </div>
+        <div class="form-group">
+            <label for="brand">Brand:</label>
+            <select id="brand" th:field="*{brandId}">
+                <option value="">-- None --</option>
+                <option th:each="b : ${brands}" th:value="${b.id}" th:text="${b.name}"></option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="isAvailable">Is Available:</label>
+            <input type="checkbox" id="isAvailable" th:field="*{isAvailable}">
+        </div>
+        <button type="submit" class="btn">Submit</button>
+        <a href="/devices" class="btn" style="background-color: #6c757d;">Cancel</a>
+    </form>
+</body>
+</html>
